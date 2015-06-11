@@ -48,7 +48,9 @@ public class SearchArtistListAdapter extends ArrayAdapter<Artist> {
         searchItemViewHolder.textView.setText(artist.name);
         //get the first url image of the artist if the artist object have one
         if(artist.images.size()>0){
-            Picasso.with(getContext()).load(artist.images.get(0).url).resize(100,100).into(searchItemViewHolder.imageView);
+            String imgUrl = artist.images.get(0).url;
+            if(imgUrl!=null)
+                Picasso.with(getContext()).load(artist.images.get(0).url).resize(100,100).into(searchItemViewHolder.imageView);
         }
         return convertView;
     }

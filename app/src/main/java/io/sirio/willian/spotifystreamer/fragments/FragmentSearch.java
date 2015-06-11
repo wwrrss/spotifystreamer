@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.io.Serializable;
@@ -24,6 +25,7 @@ import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
+import retrofit.RetrofitError;
 
 /**
  * Created by william on 6/7/15.
@@ -115,21 +117,30 @@ public class FragmentSearch extends Fragment {
             String searchTerm = params[0].toString();
             SpotifyApi spotifyApi = new SpotifyApi();
             SpotifyService spotifyService = spotifyApi.getService();
-            ArtistsPager artistsPager = spotifyService.searchArtists(searchTerm);
-
-
+            ArtistsPager artistsPager;
+            //added try catch :)
+            try{
+                artistsPager = spotifyService.searchArtists(searchTerm);
+            }catch (RetrofitError e){
+                return null;
+            }
           return artistsPager.artists.items;
         }
 
         @Override
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
-            ArrayList<Artist> artists = (ArrayList<Artist>) o;
-            searchArtistListAdapter.clear();
-            searchArtistListAdapter.addAll(artists);
-            searchArtistListAdapter.notifyDataSetChanged();
-            artistArrayList.clear();
-            artistArrayList.addAll(artists);
+            if(o!=null){
+                ArrayList<Artist> artists = (ArrayList<Artist>) o;
+                searchArtistListAdapter.clear();
+                searchArtistListAdapter.addAll(artists);
+                searchArtistListAdapter.notifyDataSetChanged();
+                artistArrayList.clear();
+                artistArrayList.addAll(artists);
+            }else{
+                Toast.makeText(getActivity(),"Sorry there was a error :(",Toast.LENGTH_SHORT).show();
+            }
+
 
         }
     }

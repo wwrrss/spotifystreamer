@@ -41,7 +41,9 @@ public class TopTrackListAdapter extends ArrayAdapter<Track> {
         }
         Track track = getItem(position);
         if(track.album.images.size()>0){
-            Picasso.with(getContext()).load(track.album.images.get(0).url).resize(100,100).into(topTrackViewHolder.imageView);
+            String imgUrl = track.album.images.get(0).url;
+            if(imgUrl!=null)
+                Picasso.with(getContext()).load(track.album.images.get(0).url).resize(100,100).into(topTrackViewHolder.imageView);
         }
         topTrackViewHolder.textView1.setText(track.name);
         topTrackViewHolder.textView2.setText(track.album.name);
