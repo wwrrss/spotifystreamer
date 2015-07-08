@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import io.sirio.willian.spotifystreamer.R;
 import io.sirio.willian.spotifystreamer.adapters.TopTrackListAdapter;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.Tracks;
 import retrofit.RetrofitError;
 
@@ -33,12 +35,21 @@ public class FragmentTopTrack extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_top_tracks,container,false);
         ListView listView = (ListView) view.findViewById(R.id.fragmentTopTracksListView);
+        //listview on item click listener
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               Track track =(Track) parent.getItemAtPosition(position);
+               ((OnTrackClickListener) getActivity()).onTrackClick(tracks,position);
+            }
+        });
         topTrackListAdapter = new TopTrackListAdapter(getActivity(),R.layout.top_track_row_item);
         listView.setAdapter(topTrackListAdapter);
         ///if saved...
         if(savedInstanceState!=null&&savedInstanceState.containsKey("data")){
              ArrayList<Tracks> trackses =(ArrayList<Tracks>) savedInstanceState.getSerializable("data");
              tracks = trackses.get(0);
+
              topTrackListAdapter.addAll(tracks.tracks);
         }else{
             String artistId = getArguments().getString("artistId");
@@ -98,6 +109,9 @@ public class FragmentTopTrack extends Fragment {
             }
 
         }
+    }
+    public interface OnTrackClickListener{
+        public void onTrackClick(Tracks tracksList, int position);
     }
 
 }

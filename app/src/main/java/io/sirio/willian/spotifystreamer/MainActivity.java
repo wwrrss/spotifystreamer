@@ -8,23 +8,37 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
+import io.sirio.willian.spotifystreamer.fragments.FragmentPlayer;
 import io.sirio.willian.spotifystreamer.fragments.FragmentSearch;
 import io.sirio.willian.spotifystreamer.fragments.FragmentTopTrack;
+import kaaes.spotify.webapi.android.models.Track;
+import kaaes.spotify.webapi.android.models.Tracks;
 
 
-public class MainActivity extends ActionBarActivity implements FragmentSearch.OnArtistClickListener {
+public class MainActivity extends ActionBarActivity implements FragmentSearch.OnArtistClickListener,FragmentTopTrack.OnTrackClickListener {
+    private boolean mTwoPane=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(savedInstanceState==null){
-            Fragment fragmentSearch = new FragmentSearch();
-            FragmentManager fm =getSupportFragmentManager();
-            android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.mainLinearLayout, fragmentSearch);
-            ft.commit();
+        if(findViewById(R.id.topTracksContainer)!=null){
+            mTwoPane=true;
+        }else{
+            if(savedInstanceState==null){
+
+                Fragment fragmentSearch = new FragmentSearch();
+                FragmentManager fm =getSupportFragmentManager();
+                android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.mainLinearLayout, fragmentSearch);
+                ft.commit();
+            }
+
         }
+
     }
 
 
@@ -58,11 +72,17 @@ public class MainActivity extends ActionBarActivity implements FragmentSearch.On
         Bundle bundle = new Bundle();
         bundle.putString("artistId",artistId);
         fragmentTopTrack.setArguments(bundle);
-        ft.replace(R.id.mainLinearLayout,fragmentTopTrack);
+        if(mTwoPane){
+            ft.replace(R.id.topTracksContainer,fragmentTopTrack);
+        }else{
+
+            ft.replace(R.id.mainLinearLayout,fragmentTopTrack);
+        }
         ft.addToBackStack("topTrack");
         ft.commit();
         getSupportActionBar().setTitle("Top 10 Tracks");
         getSupportActionBar().setSubtitle(artistName);
+
     }
 
     @Override
@@ -70,5 +90,27 @@ public class MainActivity extends ActionBarActivity implements FragmentSearch.On
         super.onBackPressed();
         getSupportActionBar().setTitle(R.string.app_name);
         getSupportActionBar().setSubtitle("");
+    }
+
+    @Override
+    public void onTrackClick(Tracks tracks,int position) {
+        FragmentManager fm = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+        FragmentPlayer fp = new FragmentPlayer();
+        Bundle bundle = new Bundle();
+        ArrayList<Tracks> tracksList = new ArrayList<>();
+        tracksList.add(tracks);
+        bundle.putSerializable("tracks",tracksList);
+        bundle.putInt("position",position);
+        fp.setArguments(bundle);
+
+        if(mTwoPane){
+            fp.show(ft,"PLAYER");
+        }else{
+            ft.replace(R.id.mainLinearLayout,fp);
+            ft.addToBackStack("fp");
+            ft.commit();
+        }
+
     }
 }
