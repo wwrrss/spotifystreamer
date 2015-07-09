@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -59,16 +60,31 @@ public class FragmentSearch extends Fragment {
             }
 
             View view = inflater.inflate(R.layout.fragment_search,container,false);
-            EditText editSearch =(EditText) view.findViewById(R.id.fragmentSearchEditText);
+            SearchView searchView = (SearchView) view.findViewById(R.id.fragmentSearchSearchView);
+            searchView.setIconifiedByDefault(false);
+            searchView.setQueryHint(getString(R.string.search_hint));
             listViewSearch = (ListView) view.findViewById(R.id.fragmentSearchListView);
             listViewSearch.setAdapter(searchArtistListAdapter);
             listViewSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Artist artist=(Artist) parent.getItemAtPosition(position);
-                    ((OnArtistClickListener)getActivity()).onArtistItemClick(artist.id,artist.name);
+                    Artist artist = (Artist) parent.getItemAtPosition(position);
+                    ((OnArtistClickListener) getActivity()).onArtistItemClick(artist.id, artist.name);
                 }
             });
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String s) {
+                    new TaskFetch().execute(new Object[]{s});
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String s) {
+                    return false;
+                }
+            });
+            /*
             editSearch.setOnKeyListener(new View.OnKeyListener() {
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -80,7 +96,7 @@ public class FragmentSearch extends Fragment {
                     }
                     return false;
                 }
-            });
+            });*/
             return view;
 
 
