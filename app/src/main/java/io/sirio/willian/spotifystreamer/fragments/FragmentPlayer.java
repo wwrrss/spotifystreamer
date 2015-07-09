@@ -134,6 +134,8 @@ public class FragmentPlayer extends DialogFragment {
                 }
             }
         });
+        //play right now!
+        buttonPlay.performClick();
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

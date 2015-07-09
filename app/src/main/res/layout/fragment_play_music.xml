@@ -93,4 +93,5 @@
 
         android:layout_toRightOf="@id/buttonPlay"
         android:id="@+id/buttonNext" />
+
 </RelativeLayout>

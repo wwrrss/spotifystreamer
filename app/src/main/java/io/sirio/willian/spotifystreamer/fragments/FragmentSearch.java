@@ -132,11 +132,22 @@ public class FragmentSearch extends Fragment {
             super.onPostExecute(o);
             if(o!=null){
                 ArrayList<Artist> artists = (ArrayList<Artist>) o;
-                searchArtistListAdapter.clear();
-                searchArtistListAdapter.addAll(artists);
-                searchArtistListAdapter.notifyDataSetChanged();
-                artistArrayList.clear();
-                artistArrayList.addAll(artists);
+                if(artists.size()>0){
+                    searchArtistListAdapter.clear();
+                    searchArtistListAdapter.addAll(artists);
+                    searchArtistListAdapter.notifyDataSetChanged();
+                    artistArrayList.clear();
+                    artistArrayList.addAll(artists);
+                }else{
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(),"Sorry, we couldn't find anything, :( type again",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
+
             }else{
                 Toast.makeText(getActivity(),"Sorry there was a error :(",Toast.LENGTH_SHORT).show();
             }
