@@ -40,7 +40,7 @@ public class FragmentSearch extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         artistArrayList=new ArrayList<>();
-        Log.i("c","create");
+
     }
 
     @Override

@@ -52,6 +52,7 @@ public class FragmentPlayer extends DialogFragment {
     private Tracks tracks;
     private long currentTrackPreviewDuration;
     private Thread threadPosition;
+    private int lastPositionBeforeOrientationChange=-1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,12 @@ public class FragmentPlayer extends DialogFragment {
         super.onStop();
         mediaPlayer.release();
         mediaPlayer =null;
+
+    }
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+
     }
     private void setCurrentTrack(){
       currentTrack = tracks.tracks.get(position);
@@ -81,16 +88,38 @@ public class FragmentPlayer extends DialogFragment {
       mediaPlayer.reset();
       isPrepared=false;
       isPlaying=false;
-      buttonPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_play));
+      tMusicStart.setText("0:00");
+        //play it!
+      buttonPlay.performClick();
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(mediaPlayer.isPlaying()){
+            outState.putSerializable("lastPosition",mediaPlayer.getCurrentPosition());
+            outState.putInt("position",position);
+
+        }
+    }
+
+
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+        if(savedInstanceState!=null){
+            lastPositionBeforeOrientationChange = savedInstanceState.getInt("lastPosition");
+            position = savedInstanceState.getInt("position");
+        }else{
+
+            position = getArguments().getInt("position");
+        }
         mediaPlayer = new MediaPlayer();
         View view = inflater.inflate(R.layout.fragment_play_music,container,false);
         ButterKnife.inject(this,view);
         final ArrayList<Tracks> trackses = (ArrayList<Tracks>) getArguments().getSerializable("tracks");
-        position = getArguments().getInt("position");
+
         tracks = trackses.get(0);
         currentTrack = tracks.tracks.get(position);
         tAlbumName.setText(currentTrack.album.name);
@@ -114,8 +143,6 @@ public class FragmentPlayer extends DialogFragment {
                         if(isPrepared){
                             mediaPlayer.start();
                         }else{
-
-
                             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                             mediaPlayer.setDataSource(getActivity(), Uri.parse(currentTrack.preview_url));
                             mediaPlayer.prepareAsync();
@@ -159,7 +186,12 @@ public class FragmentPlayer extends DialogFragment {
         mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(final MediaPlayer mp) {
+                if(lastPositionBeforeOrientationChange>0){
+                    mp.seekTo(lastPositionBeforeOrientationChange);
+                    lastPositionBeforeOrientationChange=-1;
+                }
                 mp.start();
+
                 threadPosition = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -168,6 +200,8 @@ public class FragmentPlayer extends DialogFragment {
                                 Thread.sleep(1000);
                                 seekBar.setMax((int)currentTrackPreviewDuration);
                                 seekBar.setProgress(mp.getCurrentPosition());
+                                tMusicStart.setText(String.format("%d:%d", TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.getCurrentPosition()),TimeUnit.MILLISECONDS.toSeconds(mediaPlayer.getCurrentPosition())-TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.getCurrentPosition()))));
+
 
                             }catch (Exception e){
 
@@ -195,6 +229,7 @@ public class FragmentPlayer extends DialogFragment {
                     threadPosition.interrupt();
                     threadPosition=null;
                 }
+                tMusicStart.setText("0:00");
             }
 
         });

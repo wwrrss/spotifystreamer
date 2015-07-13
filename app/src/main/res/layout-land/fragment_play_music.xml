@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Artist Name"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="5dp"
         android:layout_centerHorizontal="true"
         android:id="@+id/tArtistName" />
 
@@ -23,11 +23,11 @@
         android:id="@+id/tAlbumName" />
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_below="@+id/tAlbumName"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:id="@+id/imageAlbum" />
 
     <TextView
@@ -42,8 +42,8 @@
 
     <SeekBar
         android:layout_width="match_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tMusicName"
         android:layout_centerHorizontal="true"
@@ -52,7 +52,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="0:00"
         android:layout_below="@+id/seekBar"
         android:layout_alignParentLeft="true"
@@ -62,7 +62,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="0:30"
         android:layout_below="@+id/seekBar"
         android:layout_alignParentRight="true"
@@ -70,24 +70,24 @@
         android:id="@+id/tMusicEnd" />
 
     <ImageButton
-        android:layout_width="@dimen/player_button_dimen"
-        android:layout_height="@dimen/player_button_dimen"
+        android:layout_width="@dimen/player_button_dimen_land"
+        android:layout_height="@dimen/player_button_dimen_land"
         android:layout_below="@id/tMusicEnd"
         android:layout_toLeftOf="@+id/buttonPlay"
         android:src="@drawable/ic_previous"
         android:id="@+id/buttonBack" />
 
     <ImageButton
-        android:layout_width="@dimen/player_button_dimen"
-        android:layout_height="@dimen/player_button_dimen"
+        android:layout_width="@dimen/player_button_dimen_land"
+        android:layout_height="@dimen/player_button_dimen_land"
         android:layout_below="@id/tMusicEnd"
         android:layout_centerHorizontal="true"
         android:src="@drawable/ic_play"
         android:id="@+id/buttonPlay" />
 
     <ImageButton
-        android:layout_width="@dimen/player_button_dimen"
-        android:layout_height="@dimen/player_button_dimen"
+        android:layout_width="@dimen/player_button_dimen_land"
+        android:layout_height="@dimen/player_button_dimen_land"
         android:layout_below="@id/tMusicEnd"
         android:src="@drawable/ic_next"
 
